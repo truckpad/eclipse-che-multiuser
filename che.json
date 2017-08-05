@@ -13,7 +13,7 @@
             "source_ami": "ami-10186f7c",
             "instance_type": "t2.micro",
             "ssh_username": "ubuntu",
-            "ami_name": "eclipse-che-{{user `aws_access_key`}}-{{timestamp}}"
+            "ami_name": "eclipse-che-{{user `che_version`}}-{{timestamp}}"
         }
     ],
     "provisioners": [
@@ -51,8 +51,14 @@
             ]
         },{
             "type": "file",
-            "source": "./config/",
-            "destination": "/etc/"
+            "source": "./config",
+            "destination": "/tmp"
+        },{
+            "type": "shell",
+            "execute_command": "sudo sh -c '{{ .Vars }} {{ .Path }}'",
+            "inline": [
+                "cp -v --recursive /tmp/config/* /etc/"
+            ]
         }
     ]
 }
