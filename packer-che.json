@@ -1,0 +1,67 @@
+{
+    "variables": {
+        "aws_access_key": "",
+        "aws_secret_key": "",
+        "che_version": "5.15.0",
+        "host_base": "it.truckpad.com.br",
+        "host_che": "che.it.truckpad.com.br"
+    },
+    "builders": [
+        {
+            "type": "amazon-ebs",
+            "access_key": "{{user `aws_access_key`}}",
+            "secret_key": "{{user `aws_secret_key`}}",
+            "region": "sa-east-1",
+            "source_ami": "ami-10186f7c",
+            "instance_type": "t2.micro",
+            "ssh_username": "ubuntu",
+            "ami_name": "eclipse-che-{{user `che_version`}}-{{timestamp}}"
+        }
+    ],
+    "provisioners": [
+        {
+            "type": "shell",
+            "execute_command": "sudo sh -c '{{ .Vars }} {{ .Path }}'",
+            "inline": [
+                "apt-get update && apt-get install -y apt-transport-https ca-certificates curl software-properties-common",
+                "curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -",
+                "sudo add-apt-repository \"deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable\"",
+                "apt-get update && apt-get -y dist-upgrade",
+                "apt-get install -y docker-ce htop iftop iotop nginx-extras python-pip supervisor wget", 
+                "usermod -a -G docker ubuntu"
+            ]
+        },{
+            "type": "shell",
+            "execute_command": "sudo sh -c '{{ .Vars }} {{ .Path }}'",
+            "inline": [
+                "mkdir -p /var/lib/eclipse-che/data",
+                "docker pull eclipse/che-action:{{user `che_version`}}",
+                "docker pull eclipse/che-dir:{{user `che_version`}}",
+                "docker pull eclipse/che-init:{{user `che_version`}}",
+                "docker pull eclipse/che-ip:{{user `che_version`}}",
+                "docker pull eclipse/che-mount:{{user `che_version`}}",
+                "docker pull eclipse/che-server:{{user `che_version`}}",
+                "docker pull eclipse/che-test:{{user `che_version`}}",
+                "docker pull eclipse/che:{{user `che_version`}}"
+            ]
+        },{
+            "type": "shell",
+            "execute_command": "sudo sh -c '{{ .Vars }} {{ .Path }}'",
+            "inline": [
+                "wget -qO- https://github.com/bitly/oauth2_proxy/releases/download/v2.2/oauth2_proxy-2.2.0.linux-amd64.go1.8.1.tar.gz | tar xvz -C /usr/local/",
+                "ln -s /usr/local/oauth2_proxy-2.2.0.linux-amd64.go1.8.1 /usr/local/oauth2_proxy-2.2",
+                "ln -s /usr/local/oauth2_proxy-2.2/oauth2_proxy /usr/local/bin/"
+            ]
+        },{
+            "type": "file",
+            "source": "./config",
+            "destination": "/tmp"
+        },{
+            "type": "shell",
+            "execute_command": "sudo sh -c '{{ .Vars }} {{ .Path }}'",
+            "inline": [
+                "cd /tmp/config/ && cp -v --recursive * /etc/"
+            ]
+        }
+    ]
+}
