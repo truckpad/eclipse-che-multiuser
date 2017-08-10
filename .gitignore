@@ -1,4 +1,4 @@
 *.tmp
 *.pyc
 *.egg-info/
-dist/*gz
+src/dist/*gz
