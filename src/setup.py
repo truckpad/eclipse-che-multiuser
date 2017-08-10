@@ -13,7 +13,7 @@ setup(
     url='https://github.com/truckpad/eclipse-che-multiuser/',
     download_url='https://github.com/truckpad/eclipse-che-multiuser/',
     keywords=['docker', 'eclipse', 'eclipse-che', 'ide'],
-    # long_description=open('README').read(),
+    # long_description=open('README.md').read(),
     scripts=['eclipse-che/provisioner.py'],
     install_requires=open('requirements.txt').read().strip('\n').split('\n')
 )

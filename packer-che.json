@@ -20,6 +20,9 @@
     ],
     "provisioners": [
         {
+            "type": "shell-local",
+            "command": "cd ./src/ && ./setup.py sdist"
+        },{
             "type": "shell",
             "execute_command": "sudo sh -c '{{ .Vars }} {{ .Path }}'",
             "inline": [
@@ -34,7 +37,7 @@
             "type": "shell",
             "execute_command": "sudo sh -c '{{ .Vars }} {{ .Path }}'",
             "inline": [
-                "mkdir -p /var/lib/eclipse-che/data",
+                "mkdir -p /var/lib/eclipse-che/",
                 "docker pull eclipse/che-action:{{user `che_version`}}",
                 "docker pull eclipse/che-dir:{{user `che_version`}}",
                 "docker pull eclipse/che-init:{{user `che_version`}}",
@@ -57,10 +60,15 @@
             "source": "./config",
             "destination": "/tmp"
         },{
+            "type": "file",
+            "source": "src/dist",
+            "destination": "/tmp"
+        },{
             "type": "shell",
             "execute_command": "sudo sh -c '{{ .Vars }} {{ .Path }}'",
             "inline": [
-                "cd /tmp/config/ && cp -v --recursive * /etc/"
+                "cd /tmp/config/ && cp -v --recursive * /etc/",
+                "pip install -U /tmp/dist/eclipse-che-provisioner-*.tar.gz"
             ]
         }
     ]
