@@ -2,8 +2,10 @@
     "variables": {
         "aws_access_key": "",
         "aws_secret_key": "",
-        "che_version": "5.15.0"
-    },    
+        "che_version": "5.15.0",
+        "host_base": "it.truckpad.com.br",
+        "host_che": "che.it.truckpad.com.br"
+    },
     "builders": [
         {
             "type": "amazon-ebs",
@@ -36,10 +38,12 @@
                 "docker pull eclipse/che-action:{{user `che_version`}}",
                 "docker pull eclipse/che-dir:{{user `che_version`}}",
                 "docker pull eclipse/che-init:{{user `che_version`}}",
+                "docker pull eclipse/che-ip:{{user `che_version`}}",
                 "docker pull eclipse/che-mount:{{user `che_version`}}",
                 "docker pull eclipse/che-server:{{user `che_version`}}",
                 "docker pull eclipse/che-test:{{user `che_version`}}",
-                "docker create --restart always -v /var/run/docker.sock:/var/run/docker.sock -v /var/lib/eclipse-che/data:/data eclipse/che:{{user `che_version`}} start"
+                "docker pull eclipse/che:{{user `che_version`}}"
+                // "docker create --restart on-failure -e CHE_HOST={{user `host_che`}} CHE_PORT=8080 CHE_SINGLE_PORT=true -v /var/run/docker.sock:/var/run/docker.sock -v /var/lib/eclipse-che/data:/data eclipse/che:{{user `che_version`}} start"
             ]
         },{
             "type": "shell",
@@ -57,7 +61,7 @@
             "type": "shell",
             "execute_command": "sudo sh -c '{{ .Vars }} {{ .Path }}'",
             "inline": [
-                "cp -v --recursive /tmp/config/* /etc/"
+                "cd /tmp/config/ && cp -v --recursive * /etc/"
             ]
         }
     ]
