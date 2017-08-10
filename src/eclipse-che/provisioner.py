@@ -67,8 +67,12 @@ def initialize():
     <head>
         <meta http-equiv=refresh content=\"5;URL=/wait\">
     </head>
-    <body>
-        <b>Starting a fresh environment for {{email}}!</b>!
+    <body bgcolor="#292c2f">
+        <center>
+            <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+            <img src="https://cdn-images-1.medium.com/letterbox/36/36/50/50/1*mzAsHkbZU9O5KlKvipfu-g.png?source=logoAvatar-acc8cefe091f---829db7960f1c"><br/>
+            <p style="color:white"><b>Starting a fresh environment for {{email}}!</b>!</p>
+        </center>
     </body>
     </html>
     '''
@@ -93,8 +97,12 @@ def wait_for_workspace():
     <head>
         <meta http-equiv=refresh content=\"5;URL=/wait\">
     </head>
-    <body>
-        <b>Waiting for {{email}} personal environment to boot...</b>!<br/>
+    <body bgcolor="#292c2f">
+        <center>
+            <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+            <img src="https://cdn-images-1.medium.com/letterbox/36/36/50/50/1*mzAsHkbZU9O5KlKvipfu-g.png?source=logoAvatar-acc8cefe091f---829db7960f1c"><br/>
+            <p style="color:white"><b>Waiting for {{email}} personal environment to boot...</b>!</p>
+        </center>
     </body>
     </html>
     '''
@@ -116,8 +124,12 @@ def update_nginx_routes():
     <head>
         <meta http-equiv=refresh content=\"2;URL=/dashboard/\">
     </head>
-    <body>
-        <b>Redirecting!</b><br/>
+    <body bgcolor="#292c2f">
+        <center>
+            <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+            <img src="https://cdn-images-1.medium.com/letterbox/36/36/50/50/1*mzAsHkbZU9O5KlKvipfu-g.png?source=logoAvatar-acc8cefe091f---829db7960f1c"><br/>
+            <p style="color:white"><b>Redirecting!</b></p>
+        </center>
     </body>
     </html>
     '''
