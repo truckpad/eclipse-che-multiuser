@@ -43,7 +43,6 @@
                 "docker pull eclipse/che-server:{{user `che_version`}}",
                 "docker pull eclipse/che-test:{{user `che_version`}}",
                 "docker pull eclipse/che:{{user `che_version`}}"
-                // "docker create --restart on-failure -e CHE_HOST={{user `host_che`}} CHE_PORT=8080 CHE_SINGLE_PORT=true -v /var/run/docker.sock:/var/run/docker.sock -v /var/lib/eclipse-che/data:/data eclipse/che:{{user `che_version`}} start"
             ]
         },{
             "type": "shell",

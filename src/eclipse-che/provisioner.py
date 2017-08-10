@@ -7,6 +7,8 @@ from base64 import b64decode
 from bottle import redirect, request, route, run, template
 
 che_data_base_path = '/var/lib/eclipse-che'
+che_nginx_snippet = '/etc/nginx/snippets/eclipse-che-ports.conf'
+
 docker_client = docker.from_env()
 
 def find_unused_port(start=8000, end=9000):
@@ -18,11 +20,8 @@ def find_unused_port(start=8000, end=9000):
         if new_port not in busy_ports:
             return new_port
 
-def logged_user(cookie='_oauth2_proxy'):
-    data = request.cookies.get(cookie)
-    if data:
-        decoded_data = b64decode(data.split('|')[0]).decode('UTF-8')
-        return decoded_data.split('|')[0]
+def logged_user():
+    return request.headers.get('X-Email')
 
 @route('/')
 def initialize():
@@ -50,7 +49,7 @@ def initialize():
             detach=True, 
             name=container_name,
             volumes={
-                '/var/lib/eclipse-che/data': {'bind':'/data'}, 
+                '/var/lib/eclipse-che/%s' % email: {'bind':'/data'}, 
                 '/var/run/docker.sock': {'bind': '/var/run/docker.sock'}
             }, 
             environment=[
@@ -101,7 +100,25 @@ def wait_for_workspace():
 
 @route('/update-config')
 def update_nginx_routes():
-    print('lalala')
-    return 'lelele'
+    for header in request.headers:
+        print("%s = %s" % (header, request.headers.get(header)))
+    with open(che_nginx_snippet, 'w') as nginx_config:
+        for account in os.listdir(che_data_base_path):
+            with open(os.path.join(che_data_base_path, account, 'port'), 'r') as port_file:
+                account_port = int(port_file.readline())
+            print('User: %s, port: %i' % (account, account_port))
+            nginx_config.write('"%s" %i;\n' % (account, account_port))
+    os.system('/etc/init.d/nginx reload')
+    tmpl = '''
+    <html>
+    <head>
+        <meta http-equiv=refresh content=\"2;URL=/dashboard/\">
+    </head>
+    <body>
+        <b>Redirecting!</b><br/>
+    </body>
+    </html>
+    '''
+    return template(tmpl)
 
 run(host='localhost', port=5678)
